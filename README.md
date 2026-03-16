@@ -2,9 +2,69 @@
 
 A battle-tested agent team setup for Claude Code that turns a single AI session into a full engineering team — architect, reviewers, developer, tester, and a retrospective analyst that makes the team smarter after every session.
 
+## Setup Instructions (for Claude Code)
+
+> **Point your Claude at this repo and tell it:**
+> "Read the README at `pranavprem/claude-agent-team` and follow the setup instructions to install agent teams on this machine."
+
+Claude: follow these steps exactly.
+
+### Step 1: Copy Agent Personas
+
+Copy **all `.md` files** (except `README.md` and `CLAUDE.md`) from this repo into `~/.claude/agents/`. Create the directory if it doesn't exist.
+
+```
+~/.claude/agents/
+├── architect.md
+├── architecture-reviewer.md
+├── code-reviewer.md
+├── developer.md
+├── tester.md
+└── retrospective.md
+```
+
+**Important:** Do NOT overwrite any existing agent files. If an agent with the same name already exists, ask the user whether to replace or skip it.
+
+### Step 2: Append to CLAUDE.md (DO NOT REPLACE)
+
+Read `~/.claude/CLAUDE.md` if it exists. **Append** the contents of this repo's `CLAUDE.md` to the end of the existing file. Do not delete or modify any existing content.
+
+If `~/.claude/CLAUDE.md` does not exist, copy this repo's `CLAUDE.md` as-is.
+
+**Never replace an existing CLAUDE.md.** Always append.
+
+### Step 3: Merge Settings
+
+Read `~/.claude/settings.json` if it exists. Merge these two settings into it:
+
+```json
+{
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  },
+  "teammateMode": "tmux"
+}
+```
+
+- If `env` already exists, add the `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` key to it
+- If `teammateMode` already exists, overwrite it with `"tmux"`
+- Preserve all other existing settings
+
+If `~/.claude/settings.json` does not exist, create it with the contents of this repo's `settings.json`.
+
+### Step 4: Verify
+
+Run `claude --version` to confirm Claude Code is installed and ≥ v2.1.32. Check that `tmux` is available. Report the results to the user.
+
+### Step 5: Done
+
+Tell the user the setup is complete and show them the quick start guide below.
+
+---
+
 ## What's Inside
 
-**7 specialized agent personas** that work together through Claude Code's [agent teams](https://code.claude.com/docs/en/agent-teams) feature:
+**6 specialized agent personas** that work together through Claude Code's [agent teams](https://code.claude.com/docs/en/agent-teams) feature:
 
 | Agent | Role | Personality |
 |-------|------|-------------|
@@ -25,30 +85,10 @@ architect → arch-reviewer ⟲ → developer → tester → code-reviewer ⟲ �
 
 - [Claude Code](https://code.claude.com) v2.1.32+ (`claude --version`)
 - [tmux](https://github.com/tmux/tmux/wiki) for split-pane display (recommended)
-- A terminal emulator (Ghostty, iTerm2, etc.)
+  - macOS: `brew install tmux`
+  - Linux: `apt install tmux`
 
-## Installation
-
-```bash
-git clone https://github.com/pranavprem/claude-agent-team.git
-cd claude-agent-team
-./install.sh
-```
-
-The installer:
-- Copies agent personas to `~/.claude/agents/`
-- Installs `CLAUDE.md` with orchestration instructions to `~/.claude/`
-- Enables agent teams in `settings.json` with tmux mode
-- Backs up any existing files before overwriting
-
-**Dry run** (see what would change without modifying anything):
-```bash
-./install.sh --dry-run
-```
-
-## Usage
-
-### Full Pipeline (complex features)
+## Quick Start
 
 ```bash
 # 1. Start tmux
@@ -63,13 +103,11 @@ claude
 # 4. Tell it to create a team
 ```
 
-Prompt:
+Prompt for full pipeline:
 ```
 Create an agent team to build [your feature].
 Follow the development lifecycle in CLAUDE.md.
 ```
-
-Claude creates the team, spawns agents in separate tmux panes, and orchestrates the full 8-phase pipeline automatically.
 
 ### Simplified Variants
 
@@ -92,23 +130,6 @@ Use the code-reviewer subagent to review my recent changes
 Use the architect to design the new auth module
 ```
 
-### tmux Navigation
-
-With `teammateMode: "tmux"`, each agent gets its own pane:
-
-| Action | Command |
-|--------|---------|
-| Switch panes | Click (with mouse on) or `Ctrl+B` + arrow key |
-| Jump to pane by number | `Ctrl+B` then `q` then number |
-| Zoom/unzoom a pane | `Ctrl+B` then `z` |
-| Show task list | `Ctrl+T` |
-
-**Tip:** Enable mouse support in tmux:
-```bash
-echo "set -g mouse on" >> ~/.tmux.conf
-tmux source-file ~/.tmux.conf
-```
-
 ## The 8-Phase Pipeline
 
 1. **Architecture** — Architect produces a design document (components, data flow, API contracts, security, error handling)
@@ -119,6 +140,23 @@ tmux source-file ~/.tmux.conf
 6. **Architecture Conformance** — Reviewer validates implementation matches the design
 7. **Completion** — Atomic commits, push
 8. **Retrospective** — Analyst extracts learnings, updates agent prompts & CLAUDE.md
+
+## tmux Navigation
+
+With `teammateMode: "tmux"`, each agent gets its own pane:
+
+| Action | Command |
+|--------|---------|
+| Switch panes | Click (with mouse on) or `Ctrl+B` + arrow key |
+| Jump to pane by number | `Ctrl+B` then `q` then number |
+| Zoom/unzoom a pane | `Ctrl+B` then `z` |
+| Show task list | `Ctrl+T` |
+
+**Tip:** Enable mouse support:
+```bash
+echo "set -g mouse on" >> ~/.tmux.conf
+tmux source-file ~/.tmux.conf
+```
 
 ## Design Principles Baked In
 
@@ -149,15 +187,15 @@ You are a **Principal Software Architect**...
 ```
 
 ### Change the model
-Edit the `model:` field in each agent's frontmatter. Options: `opus`, `sonnet`, `haiku`, or `inherit` (use session default).
+Edit the `model:` field in each agent's frontmatter. Options: `opus`, `sonnet`, `haiku`, or `inherit`.
 
-**Cost optimization:** Use `opus` for architect + code-reviewer (need strongest reasoning), `sonnet` for developer + tester (good coding, cheaper).
+**Cost optimization:** Use `opus` for architect + code-reviewer (strongest reasoning), `sonnet` for developer + tester (good coding, cheaper).
 
 ### Update the pipeline
 Edit `~/.claude/CLAUDE.md` to change the phase order, add phases, or modify management principles.
 
 ### Add project-specific context
-Create `.claude/CLAUDE.md` in your project root for project-specific conventions, gotchas, and architecture notes. Agents read both user-level and project-level CLAUDE.md.
+Create `.claude/CLAUDE.md` in your project root for project-specific conventions. Agents read both user-level and project-level CLAUDE.md.
 
 ## How It Gets Smarter
 
@@ -175,9 +213,8 @@ Over time, your team evolves — common mistakes get caught earlier, patterns ge
 
 ```
 claude-agent-team/
-├── README.md                    # This file
-├── install.sh                   # Installer script
-├── CLAUDE.md                    # User-level orchestration instructions
+├── README.md                    # This file (includes setup instructions for Claude)
+├── CLAUDE.md                    # Orchestration instructions (appended to existing)
 ├── settings.json                # Agent teams enabled + tmux mode
 ├── architect.md                 # System architecture agent
 ├── architecture-reviewer.md     # Design review + conformance agent
@@ -194,4 +231,4 @@ Built by [pranavprem](https://github.com/pranavprem) with [Neo](https://github.c
 Inspired by:
 - [Claude Code Agent Teams docs](https://code.claude.com/docs/en/agent-teams)
 - [Claude Code Sub-agents docs](https://code.claude.com/docs/en/sub-agents)
-- The community patterns from [awesome-claude-agents](https://github.com/rahulvrane/awesome-claude-agents)
+- Community patterns from [awesome-claude-agents](https://github.com/rahulvrane/awesome-claude-agents)
