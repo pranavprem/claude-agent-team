@@ -1,2 +1,7 @@
 *.bak
 .DS_Store
+.env
+.mcp-configs/
+__pycache__/
+*.pyc
+.venv/

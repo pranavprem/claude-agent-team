@@ -273,9 +273,8 @@ def main() -> None:
     bot_user_id = auth_resp.get("user_id", "")
     logger.info("Bot identity: %s (user_id=%s)", bot_name, bot_user_id)
 
-    @app.event("message")
-    def handle_message(event: dict, say) -> None:  # noqa: ARG001 — say is required by bolt
-        """Route incoming messages to the appropriate channel inbox."""
+    def _process_event(event: dict) -> None:
+        """Shared handler for both message and app_mention events."""
         subtype = event.get("subtype")
 
         # Ignore non-human message subtypes (bot_message, channel_join, etc.)
@@ -302,6 +301,16 @@ def main() -> None:
         if not channel_name:
             return
 
+        # Ack receipt with eyes emoji
+        try:
+            app.client.reactions_add(
+                channel=channel_id,
+                timestamp=event.get("ts", ""),
+                name="eyes",
+            )
+        except Exception:
+            pass  # non-critical, don't block on reaction failure
+
         user_name = user_cache.get(user_id)
         file_path = write_message(inbox_dir, channel_name, event, user_name)
 
@@ -311,6 +320,14 @@ def main() -> None:
             channel_name,
             file_path,
         )
+
+    @app.event("message")
+    def handle_message(event: dict, say) -> None:  # noqa: ARG001
+        _process_event(event)
+
+    @app.event("app_mention")
+    def handle_app_mention(event: dict, say) -> None:  # noqa: ARG001
+        _process_event(event)
 
     # Socket Mode connects via WebSocket — no public HTTP endpoint needed.
     # The handler manages reconnections automatically.

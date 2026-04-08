@@ -1,0 +1,82 @@
+bot_name: Neo
+slack_section: Projects
+
+sessions:
+  control:
+    path: /Users/pranav/git/neo-control
+    channel: control
+    port: 9100
+    type: control
+
+  life:
+    path: /Users/pranav/git/life-tracking
+    channel: life
+    port: 9101
+    type: assistant
+
+  oracle:
+    path: /Users/pranav/git/oracle
+    channel: oracle
+    port: 9102
+    type: project
+
+  tor:
+    path: /Users/pranav/git/tor
+    channel: tor
+    port: 9103
+    type: project
+
+  morpheus:
+    path: /Users/pranav/git/morpheus
+    channel: morpheus
+    port: 9104
+    type: project
+
+  neo-services:
+    path: /Users/pranav/git/neo-services
+    channel: neo-services
+    port: 9105
+    type: project
+
+  comfyui:
+    path: /Users/pranav/git/ComfyUI
+    channel: comfyui
+    port: 9106
+    type: project
+
+  homeassistant:
+    path: /Users/pranav/git/homeassistant
+    channel: homeassistant
+    port: 9107
+    type: project
+    existing: true
+
+  mediaserver:
+    path: /Users/pranav/git/mediaserver
+    channel: mediaserver
+    port: 9108
+    type: project
+
+  openmemory-local:
+    path: /Users/pranav/git/openmemory-local
+    channel: openmemory-local
+    port: 9109
+    type: project
+
+  qdrant-nas:
+    path: /Users/pranav/git/qdrant-nas
+    channel: qdrant-nas
+    port: 9110
+    type: project
+
+  taxes:
+    path: /Users/pranav/git/taxes
+    channel: taxes
+    port: 9111
+    type: project
+
+  claude-agent-team:
+    path: /Users/pranav/git/claude-agent-team
+    channel: claude-agent-team
+    port: 9112
+    type: project
