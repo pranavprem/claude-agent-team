@@ -33,6 +33,7 @@ from mcp.shared.message import SessionMessage
 from mcp.types import (
     JSONRPCMessage,
     JSONRPCNotification,
+    Notification,
     TextContent,
     Tool,
 )
@@ -455,16 +456,24 @@ async def send_channel_notification(
         return
 
     try:
-        notification = JSONRPCNotification(
-            jsonrpc="2.0",
-            method=CHANNEL_NOTIFICATION_METHOD,
-            params={"content": content, "meta": meta},
+        from pydantic import BaseModel
+        from typing import Literal
+
+        class ChannelNotificationParams(BaseModel):
+            content: str
+            meta: dict[str, str] = {}
+
+        notification = Notification[
+            ChannelNotificationParams,
+            Literal["notifications/claude/channel"],
+        ](
+            method="notifications/claude/channel",
+            params=ChannelNotificationParams(content=content, meta=meta),
         )
-        session_message = SessionMessage(message=JSONRPCMessage(notification))
-        await _active_session._write_stream.send(session_message)
-        logger.info("Notification sent via session write stream")
+        await _active_session.send_notification(notification)
+        logger.info("Notification sent via session.send_notification()")
     except Exception as e:
-        logger.error("Failed to send notification: %s", e)
+        logger.error("Failed to send notification: %s", e, exc_info=True)
 
 
 def parse_message_file(file_path: Path) -> dict[str, Any] | None:
@@ -522,10 +531,11 @@ async def _process_message_file(
     content = data.get("text", "")
     meta = {
         "channel_id": data.get("channel_id", channel_id),
-        "user": data.get("user", "unknown"),
+        "user": data.get("user_name", data.get("user", "unknown")),
         "ts": data.get("ts", ""),
-        "thread_ts": data.get("thread_ts", ""),
     }
+    if data.get("thread_ts"):
+        meta["thread_ts"] = data["thread_ts"]
     logger.info("Incoming message from %s: %s", meta["user"], content[:80])
     await send_channel_notification(write_stream, content, meta)
 
