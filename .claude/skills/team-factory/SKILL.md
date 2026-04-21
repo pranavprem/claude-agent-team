@@ -1,12 +1,12 @@
 ---
-name: harness
+name: team-factory
 description: Generate or refactor a project-specific Claude Code agent team from a repo and a brief. Use when the user wants custom agent personas, CLAUDE.md orchestration, or reusable team scaffolding created for a specific codebase instead of hand-authoring every file.
 when_to_use: Trigger on requests like "make me an agent team for this repo", "generate Claude agents for this project", "create project-specific subagents", "build a CLAUDE.md workflow for this codebase", or "turn this into a reusable agent-team repo".
 argument-hint: <team-brief>
 effort: high
 ---
 
-# Harness
+# Team Factory
 
 Create or update a project-specific Claude Code agent-team kit for the current repository.
 

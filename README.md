@@ -2,7 +2,7 @@
 
 A battle-tested agent team setup for Claude Code that turns a single AI session into a full engineering team — architect, reviewers, developer, tester, and a retrospective analyst that makes the team smarter after every session.
 
-It also includes **`/harness`**, a Claude Code skill that can generate project-specific agent teams, supporting skills, and setup docs from a single brief.
+It also includes **`/team-factory`**, a Claude Code skill that can generate project-specific agent teams, supporting skills, and setup docs from a single brief.
 
 ## Setup Instructions (for Claude Code)
 
@@ -27,22 +27,22 @@ Copy **all `.md` files** (except `README.md` and `CLAUDE.md`) from this repo int
 
 **Important:** Do NOT overwrite any existing agent files. If an agent with the same name already exists, ask the user whether to replace or skip it.
 
-### Step 2: Install the Harness Skill
+### Step 2: Install the Team Factory Skill
 
-Copy the repo's `.claude/skills/harness/` directory into `~/.claude/skills/harness/`. Create `~/.claude/skills/` if it doesn't exist.
+Copy the repo's `.claude/skills/team-factory/` directory into `~/.claude/skills/team-factory/`. Create `~/.claude/skills/` if it doesn't exist.
 
 ```text
 ~/.claude/skills/
-└── harness/
+└── team-factory/
     ├── SKILL.md
     └── references/
         ├── role-shaping.md
         └── shareable-team-repo.md
 ```
 
-**Important:** Copy the entire `harness/` directory, not just `SKILL.md`, so the bundled reference files come along too.
+**Important:** Copy the entire `team-factory/` directory, not just `SKILL.md`, so the bundled reference files come along too.
 
-**Important:** Do NOT overwrite an existing `~/.claude/skills/harness/` directory without asking the user whether to replace or skip it.
+**Important:** Do NOT overwrite an existing `~/.claude/skills/team-factory/` directory without asking the user whether to replace or skip it.
 
 ### Step 3: Append to CLAUDE.md (DO NOT REPLACE)
 
@@ -96,7 +96,7 @@ Tell the user the setup is complete and show them the quick start guide below.
 
 Included skill:
 
-- **`/harness`**: Generates project-specific agent personas, orchestration docs, optional supporting skills, and README/install updates from a single brief.
+- **`/team-factory`**: Generates project-specific agent personas, orchestration docs, optional supporting skills, and README/install updates from a single brief.
 
 The **main Claude session acts as team lead** (manager), orchestrating the pipeline:
 
@@ -134,16 +134,16 @@ Follow the development lifecycle in CLAUDE.md.
 
 ### Generate a project-specific team kit
 
-Use the included Harness skill when you want Claude to author or refactor agent-team files instead of just running the existing team:
+Use the included Team Factory skill when you want Claude to author or refactor agent-team files instead of just running the existing team:
 
 ```
-/harness Create a project-specific Claude Code team for this repo. Generate the right agent personas, orchestration instructions, and any supporting skills the workflow truly needs.
+/team-factory Create a project-specific Claude Code team for this repo. Generate the right agent personas, orchestration instructions, and any supporting skills the workflow truly needs.
 ```
 
 Example for a shared template repo:
 
 ```
-/harness Turn this repository into a reusable Claude Code team kit for Home Assistant integrations. Update the agents, CLAUDE.md, optional skills, and README install instructions.
+/team-factory Turn this repository into a reusable Claude Code team kit for Home Assistant integrations. Update the agents, CLAUDE.md, optional skills, and README install instructions.
 ```
 
 ### Simplified Variants
@@ -261,7 +261,7 @@ claude-agent-team/
 ├── retrospective.md             # Session learning agent
 └── .claude/
     └── skills/
-        └── harness/
+        └── team-factory/
             ├── SKILL.md         # Meta-skill for generating project-specific team kits
             └── references/
                 ├── role-shaping.md
